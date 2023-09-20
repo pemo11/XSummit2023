@@ -1,6 +1,6 @@
 // file: Ex_AsyncDownload.prg
 // Downloading web content asynchronously (good)
-// compile with /main:App /r:System.Net.Http.dll
+// Compile with /main:App /r:System.Net.Http.dll
 
 using System
 using System.Net
