@@ -1,4 +1,4 @@
-// file: Ex_SyncDownload.prg
+// file: Ex_Download_Sync.prg
 // Downloading web content synchronously like in the past (not good)
 // compile with /main:App 
 
