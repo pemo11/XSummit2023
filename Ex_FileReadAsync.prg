@@ -22,9 +22,17 @@ Class App
       // call is not awaited so a task object is returned
       var t := GetFile(filePath)
       ?i"Current task status: {t.Status}"
-      // Wait() is optional in this case
-      t:Wait()
+      // is Wait() optional ?
+      // without Wait() the status is WaitingForActivation
+      // by queyring the result, the task gets executed so the buffer size is queryable
+      // t:Wait()
       ?i"{t.Result.ToString(""n0"")} bytes read"
       ?i"Current task status: {t.Status}"
 
 End Class
+
+/*
+ RanToCompletion       - The task completed execution successfully
+ WaitingForActivation  - The task is waiting to be activated and scheduled internally by the .NET infrastructure
+ Running               - The task is running but has not yet completed
+*/
