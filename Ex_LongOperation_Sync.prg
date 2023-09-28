@@ -4,8 +4,8 @@
 
 Class App
 
-    Static Method DoLongOperation() As Void
-       For Local i := 1 UpTo 10
+    Static Method DoLongOperation(n As Int) As Void
+       For Local i := 1 UpTo n
            ?i"Doing some work... ({i})"
            System.Threading.Thread.Sleep(1000)
        Next
@@ -13,7 +13,7 @@ Class App
 
     Static Method Start() As Void
        ? "Starting..."
-       DoLongOperation()
+       DoLongOperation(12)
        ? "Doing another work..."
        ? "Finish..."
        Return
