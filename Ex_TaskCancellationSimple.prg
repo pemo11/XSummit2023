@@ -7,7 +7,7 @@ using System.Threading.Tasks
 
 Class App
 
-  Static Method StartTask() As Task
+  Static Method StartTask() As Void
     var cts := CancellationTokenSource{}
     var t := Task.Run(async Delegate {
         For Local i := 1 UpTo 10
@@ -17,6 +17,7 @@ Class App
             cts:Cancel()
           EndIf
           If cts:Token:IsCancellationRequested
+            // necessary for the actual cancelling
             cts:Token:ThrowIfCancellationRequested()
           EndIf
         Next
@@ -26,8 +27,7 @@ Class App
         EndIf
       })
       t:Wait()
-    Return t
-
+ 
   Static Method Start() As Void
     StartTask()
 
