@@ -1,5 +1,5 @@
-// file: Ex_FileSearchV3.prg
-// The final version with Cancel and simplification
+// file: Ex4_FileSearchCancellation.prg
+// An async file search with Cancellation
 // compile with /t:winexe
 
 using System.Collections.Generic
@@ -27,7 +27,7 @@ Class MainForm Inherit Form
     Private cts As CancellationTokenSource
 
     Private Method InitializeComponent() As Void
-        Self:Text := "FileSearch - V3"
+        Self:Text := "FileSearch with Cancellation option"
         Self:Size := Size{660,680}
         Self:Font := Font{"Arial", 16}
 
@@ -142,13 +142,13 @@ Class MainForm Inherit Form
             lbl4:Text := i"{lstFiles.Items.Count} files listed"
         })
        
-    Method btnStart_Click(Sender As Object, e As EventArgs) As Void
+    Async Method btnStart_Click(Sender As Object, e As EventArgs) As Void
         btnStart:Enabled := False
         btnCancel:Enabled := True
         lbl4:Text := ""
         lstFiles:Items:Clear()
         cts := CancellationTokenSource{}
-        FileSearch(txtDirectory:Text, txtFilter:Text, lstFiles, cts:Token)
+        await FileSearch(txtDirectory:Text, txtFilter:Text, lstFiles, cts:Token)
         btnStart:Enabled := True
         btnCancel:Enabled := False
  
@@ -156,7 +156,6 @@ Class MainForm Inherit Form
       cts:Cancel()
       
 End Class
-
 
 Function Start() As Void
    Application.Run(MainForm{})

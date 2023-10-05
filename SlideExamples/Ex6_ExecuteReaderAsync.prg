@@ -1,4 +1,4 @@
-// file: Ex_ExecuteReaderAsyncUI.prg
+// file: Ex6_ExecuteReaderAsync.prg
 // A asynchronously database access 
 // compile with /t:winexe /r:System.Data.Sqlite.dll
 
@@ -23,7 +23,7 @@ Class MainForm Inherit Form
         thisForm := Self
         Self:Text := "Sync vs Async Database Access"
         Self:Size := Size{640,640}
-        Self:Font := Font{"Arial", 16}
+        Self:Font := Font{"Arial", 12}
 
         grp1 := GroupBox{}
         grp1:Text := "Sync vs Async"
@@ -53,7 +53,7 @@ Class MainForm Inherit Form
         
         dgvData := DataGridView{}
         dgvData:Size := Size{500,400}
-        dgvData:Location := Point{40,220}
+        dgvData:Location := Point{40,240}
         
         Self:Controls:AddRange(<Control>{grp1,lstStatus, dgvData})
 
@@ -66,7 +66,7 @@ Class MainForm Inherit Form
 
     Method btnSync_Click(Sender As Object, e As EventArgs) As Void
       dgvData:DataSource := Null
-      var sqlText := "Select * From Book"
+      var sqlText := "Select Id,Author,Title,PubYear From Book"
       UpdateStatus("Starting query")
       var ta := GetDataSync(sqlText)
       dgvData:DataSource := ta
@@ -87,41 +87,40 @@ Class MainForm Inherit Form
        lstStatus:SelectedIndex := lstStatus:Items:Count - 1
        
     Static Method GetDataSync(sql As String) As DataTable
-     var cnStr := "Data Source=BookLib.db3"
-     var ta := DataTable{}
-     Begin using var cn := SqliteConnection{cnStr}
-       cn:Open()
-       var cmd := cn:CreateCommand()
-       cmd:CommandText := sql
-       ThisForm.UpdateStatus("Sync query started...")
-       Begin Using var reader := cmd:ExecuteReader()
-           ta:Load(reader)
-       End Using
-       ThisForm.UpdateStatus("Sync query finished...")
-     End Using
-     // A little delay as usual;)
-     System.Threading.Thread.Sleep(2000)
-     Return ta
+		var cnStr := "Data Source=BookLib.db3"
+		var ta := DataTable{}
+		Begin using var cn := SqliteConnection{cnStr}
+		   cn:Open()
+		   var cmd := cn:CreateCommand()
+		   cmd:CommandText := sql
+		   ThisForm.UpdateStatus("Sync query started...")
+		   Begin Using var reader := cmd:ExecuteReader()
+			   ta:Load(reader)
+		   End Using
+		   ThisForm.UpdateStatus("Sync query finished...")
+		End Using
+		// A little delay as usual;)
+		System.Threading.Thread.Sleep(2000)
+		Return ta
  
     Async Static Method GetDataAsync(sql As String) As Task<DataTable>
-     var cnStr := "Data Source=BookLib.db3"
-     var ta := DataTable{}
-     Begin using var cn := SqliteConnection{cnStr}
-       cn:Open()
-       var cmd := cn:CreateCommand()
-       cmd:CommandText := sql
-       ThisForm.UpdateStatus("Async query started...")
-       Begin Using var reader := await cmd:ExecuteReaderAsync()
-           ta:Load(reader)
-       End Using
-     End Using
-     ThisForm.UpdateStatus("Async query finished...")
-     // A little delay as usual;)
-     await Task.Delay(2000)
-     Return ta
+		var cnStr := "Data Source=BookLib.db3"
+		var ta := DataTable{}
+		Begin using var cn := SqliteConnection{cnStr}
+		   cn:Open()
+		   var cmd := cn:CreateCommand()
+		   cmd:CommandText := sql
+		   ThisForm.UpdateStatus("Async query started...")
+		   Begin Using var reader := await cmd:ExecuteReaderAsync()
+			   ta:Load(reader)
+		   End Using
+		End Using
+		ThisForm.UpdateStatus("Async query finished...")
+		// A little delay as usual;)
+		await Task.Delay(2000)
+		Return ta
 
 End Class
-
 
 Function Start() As Void
    Application.Run(MainForm{})
