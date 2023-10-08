@@ -18,6 +18,7 @@ Class MainForm Inherit Form
     Private txtLowerBound As TextBox
     Private txtUpperBound As TextBox
     Private lstNumbers As ListBox
+    Private PartitionCount := 4 As Int
 
     Private Method InitializeComponent() As Void
         Self:Text := "Find primes asynchronously with multiple tasks"
@@ -106,13 +107,13 @@ Class MainForm Inherit Form
         lbl3:Text := ""
         var l := Int32.Parse(txtLowerBound:Text)
         var u := Int32.Parse(txtUpperBound:Text)
-        // partition the number range in 4 partitions (for example)
-        Var partCount := (Int)(u - l) / 4
-        var partRemainder := (u - l) % 4
+        // partition the number range in multipe partitions (for example)
+        Var partCount := (Int)(u - l) / PartitionCount
+        Var partRemainder := (u - l) % PartitionCount
         var taskList := List<Task<List<Int>>>{}
         var sw := StopWatch{}
         sw:Start()
-        For Var i := 0 Upto 3
+        For Var i := 0 Upto PartitionCount - 1
           var lPart := i * partCount + 1
           var uPart := lPart + partCount
           taskList:Add(Task.Run({=> FindPrimeNumbers(lPart, uPart)}))
