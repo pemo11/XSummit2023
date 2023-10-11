@@ -1,3 +1,6 @@
 *.exe
+*.cfg
+*.bak
+*.pdb
 bin
 obj
