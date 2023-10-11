@@ -16,7 +16,7 @@ DELEGATE dSearchDel (p1 AS STRING, p2 AS STRING) AS List<FileInfo>
 CLASS MainForm INHERIT Form
     PRIVATE btnStart1 AS Button
     PRIVATE btnStart2 AS Button
-	PRIVATE grp1 AS GroupBox
+	  PRIVATE grp1 AS GroupBox
     PRIVATE lbl1 AS Label
     PRIVATE lbl2 AS Label
     PRIVATE lbl3 AS Label
@@ -56,8 +56,8 @@ CLASS MainForm INHERIT Form
         txtFilter:Location := Point{20,92}
 
         grp1 := GroupBox{}
-	    grp1:Size := Size{400,80}
-	    grp1:Location := Point{20, 120}
+		    grp1:Size := Size{400,80}
+		    grp1:Location := Point{20, 120}
 		
         btnStart1 := Button{}
         btnStart1:Name := "btnStart1"
@@ -71,7 +71,7 @@ CLASS MainForm INHERIT Form
         btnStart2:Size := Size{160,32}
         btnStart2:Location := Point{220,30}
 
-		grp1:Controls:AddRange(<Control>{btnStart1, btnStart2})
+		    grp1:Controls:AddRange(<Control>{btnStart1, btnStart2})
 		
         lbl3 := Label{}
         lbl3:Text := "Results:"

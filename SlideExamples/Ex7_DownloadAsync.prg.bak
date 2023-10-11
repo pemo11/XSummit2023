@@ -14,23 +14,23 @@ FUNCTION Start() AS VOID
  
 CLASS App
   STATIC PROTECT oLock AS OBJECT     // To make sure we synchronize the writing to the screen
-  STATIC downloadUrl := "http://www.xsharp.info/index.php" AS STRING
+  STATIC downloadUrl := "http://www.xsharp.info/index.php" As String
 
   STATIC CONSTRUCTOR
     oLock := OBJECT{}
     ServicePointManager.SecurityProtocol := SecurityProtocolType.Tls12
  
-  ASYNC STATIC METHOD StartDownload() AS VOID
-    VAR Size := AWAIT DownloadFile()
+  ASYNC STATIC METHOD StartDownload() As Void
+    var Size := Await DownloadFile()
     ? "3. returned from long process"
     ? Size, " Bytes downloaded"
  
-  ASYNC STATIC METHOD DownloadFile() AS Task<INT64>
+  ASYNC STATIC METHOD DownloadFile() As Task<Int64>
     VAR WebClient := WebClient{}
-    VAR FileName := Path.GetTempPath() + "temp.txt"
+    VAR FileName := Path.GetTempPath() +"temp.txt"
     webClient:DownloadProgressChanged += OnDownloadProgress
     webClient:Credentials := CredentialCache.DefaultNetworkCredentials
-    AWAIT webClient:DownloadFileTaskAsync(downloadUrl, FileName)
+    Await webClient:DownloadFileTaskAsync(downloadUrl, FileName)
     VAR filePath := Path.Combine(Path.GetTempPath(), "temp.txt")
     IF file:Exists(filePath)
       VAR size := FileInfo{filePath}:Length

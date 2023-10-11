@@ -2,36 +2,36 @@
 // An async file search with Cancellation
 // compile with /t:winexe
 
-USING System.Collections.Generic
-USING System.Drawing
-USING System.IO
-USING System.Linq
-USING System.Windows.Forms
+using System.Collections.Generic
+using System.Drawing
+using System.IO
+using System.Linq
+using System.Windows.Forms
 
-USING System.Threading
-USING System.Threading.Tasks
+using System.Threading
+using System.Threading.Tasks
 
-CLASS MainForm INHERIT Form
-    PRIVATE btnStart AS Button
-    PRIVATE btnCancel AS Button
-    PRIVATE grp1 AS GroupBox
-    PRIVATE lbl1 AS Label
-    PRIVATE lbl2 AS Label
-    PRIVATE lbl3 AS Label
-    PRIVATE lbl4 AS Label
-    PRIVATE txtDirectory AS TextBox
-    PRIVATE txtFilter AS TextBox
-    PRIVATE lstFiles AS ListBox
-    PRIVATE toolTip1 AS Tooltip
+Class MainForm Inherit Form
+    Private btnStart As Button
+    Private btnCancel As Button
+    Private grp1 As GroupBox
+    Private lbl1 As Label
+    Private lbl2 As Label
+    Private lbl3 As Label
+    Private lbl4 As Label
+    Private txtDirectory As TextBox
+    Private txtFilter As TextBox
+    Private lstFiles As ListBox
+    Private toolTip1 As Tooltip
     
-    PRIVATE cts AS CancellationTokenSource
+    Private cts As CancellationTokenSource
 
-    PRIVATE METHOD InitializeComponent() AS VOID
-        SELF:Text := "FileSearch with Cancellation option"
-        SELF:Size := Size{660,680}
-        SELF:Font := Font{"Arial", 16}
+    Private Method InitializeComponent() As Void
+        Self:Text := "FileSearch with Cancellation option"
+        Self:Size := Size{660,680}
+        Self:Font := Font{"Arial", 16}
 
-        SELF:toolTip1 := Tooltip{}
+        Self:toolTip1 := Tooltip{}
 
         lbl1 := Label{}
         lbl1:Text := "Directory:"
@@ -84,9 +84,9 @@ CLASS MainForm INHERIT Form
         lstFiles:Location := Point{20,220}
         lstFiles:Backcolor := Color.LightYellow
         lstFiles:Font := Font{"Arial", 12}
-        lstFiles:HorizontalScrollbar := TRUE
+        lstFiles:HorizontalScrollbar := True
         lstFiles:SelectedIndexChanged += {sender, e => 
-          SELF:toolTip1:SetToolTip(lstFiles,lstFiles:SelectedItem:ToString())
+          Self:toolTip1:SetToolTip(lstFiles,lstFiles:SelectedItem:ToString())
         }
 
         lbl4 := Label{}
@@ -95,67 +95,67 @@ CLASS MainForm INHERIT Form
         lbl4:Size := Size{200,24}
         lbl4:Location := Point{20,600}
 
-        SELF:Controls:AddRange(<Control>{grp1,lbl1,lbl2,lbl3,lbl4,txtFilter,txtDirectory,lstFiles})
+        Self:Controls:AddRange(<Control>{grp1,lbl1,lbl2,lbl3,lbl4,txtFilter,txtDirectory,lstFiles})
 
         btnStart:Click += EventHandler{btnStart_Click}
         btnCancel:Click += EventHandler{btnCancel_Click}
 
-        btnCancel:Enabled := FALSE
+        btnCancel:Enabled := False
 
 
-    CONSTRUCTOR()
+    Constructor()
       InitializeComponent()
 
-    METHOD ListDirectory(DirPath AS STRING, Filter AS STRING) AS List<STRING>
-        RETURN Directory.EnumerateFiles(DirPath, Filter):ToList()
+    Method ListDirectory(DirPath As String, Filter As String) As List<String>
+        Return Directory.EnumerateFiles(DirPath, Filter):ToList()
     
-    METHOD ListDirectories(DirPath AS STRING, Filter AS STRING, lb AS Listbox, Token AS CancellationToken) AS VOID
-        VAR files := ListDirectory(DirPath, Filter)
-        IF files:Count > 0
+    Method ListDirectories(DirPath As String, Filter As String, lb As Listbox, Token As CancellationToken) As Void
+        Var files := ListDirectory(DirPath, Filter)
+        If files:Count > 0
           lb:Items:AddRange(files:ToArray())
           lb:SelectedIndex := lb:Items:Count - 1
-        ENDIF
-        FOREACH VAR subdir IN Directory.EnumerateDirectories(DirPath)
-          IF cts:Token:IsCancellationRequested
+        EndIf
+        ForEach var subdir in Directory.EnumerateDirectories(DirPath)
+          If cts:Token:IsCancellationRequested
             cts:Token:ThrowIfCancellationRequested()
-          ENDIF
+          EndIf
           ListDirectories(subdir, Filter, lb, Token)
-        NEXT
+        Next
         
-    ASYNC METHOD FileSearch(StartDirectory AS STRING, FileFilter AS STRING, lb AS Listbox, Token AS CancellationToken) AS Task
-        LOCAL infoMsg AS STRING
-        AWAIT Task.Run({ => 
-           TRY
+    Async Method FileSearch(StartDirectory As String, FileFilter As String, lb As Listbox, Token As CancellationToken) As Task
+        Local infoMsg As String
+        await Task.Run({ => 
+           Try
               ListDirectories(StartDirectory, FileFilter, lb, Token)
-           CATCH ex AS OperationCanceledException 
+           Catch ex As OperationCanceledException 
               infoMsg := i"!!! {ex:Message}"
               lstFiles:Items:Add(infoMsg)
               lstFiles:SelectedIndex := lstFiles:Items:Count - 1
-              btnStart:Enabled := TRUE
-              btnCancel:Enabled := FALSE
-           CATCH ex AS SystemException
+              btnStart:Enabled := True
+              btnCancel:Enabled := False
+           Catch ex As SystemException
               infoMsg := i"!!! error {ex:Message}"
               lstFiles:Items:Add(infoMsg)
               lstFiles:SelectedIndex := lstFiles:Items:Count - 1
-           END TRY
+           End Try
         }, token).ContinueWith({t =>
-            lbl4:Text := i"{lstFiles.Items.Count.ToString(""n0"")} files listed"
+            lbl4:Text := i"{lstFiles.Items.Count} files listed"
         })
        
-    ASYNC METHOD btnStart_Click(Sender AS OBJECT, e AS EventArgs) AS VOID
-        btnStart:Enabled := FALSE
-        btnCancel:Enabled := TRUE
+    Async Method btnStart_Click(Sender As Object, e As EventArgs) As Void
+        btnStart:Enabled := False
+        btnCancel:Enabled := True
         lbl4:Text := ""
         lstFiles:Items:Clear()
         cts := CancellationTokenSource{}
-        AWAIT FileSearch(txtDirectory:Text, txtFilter:Text, lstFiles, cts:Token)
-        btnStart:Enabled := TRUE
-        btnCancel:Enabled := FALSE
+        await FileSearch(txtDirectory:Text, txtFilter:Text, lstFiles, cts:Token)
+        btnStart:Enabled := True
+        btnCancel:Enabled := False
  
-    METHOD btnCancel_Click(Sender AS OBJECT, e AS EventArgs) AS VOID
+    Method btnCancel_Click(Sender As Object, e As EventArgs) As Void
       cts:Cancel()
       
-END CLASS
+End Class
 
-FUNCTION Start() AS VOID
+Function Start() As Void
    Application.Run(MainForm{})

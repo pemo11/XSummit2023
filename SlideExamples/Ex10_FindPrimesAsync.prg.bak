@@ -1,30 +1,30 @@
-// file: Ex10_FindPrimesASync.prg
+// file: Ex_FindPrimesASync.prg
 // Finding prime numbers asynchronously
 
-USING System.Collections.Generic
-USING System.Diagnostics
-USING System.Drawing
-USING System.Linq
-USING System.Threading
-USING System.Threading.Tasks
-USING System.Windows.Forms
+using System.Collections.Generic
+using System.Diagnostics
+using System.Drawing
+using System.Linq
+using System.Threading
+using System.Threading.Tasks
+using System.Windows.Forms
 
-CLASS MainForm INHERIT Form
-    PRIVATE btnStart AS Button
-    PRIVATE lbl1 AS Label
-    PRIVATE lbl2 AS Label
-    PRIVATE lbl3 AS Label
-    PRIVATE grp1 AS GroupBox
-    PRIVATE txtLowerBound AS TextBox
-    PRIVATE txtUpperBound AS TextBox
-    PRIVATE lstNumbers AS ListBox
+Class MainForm Inherit Form
+    Private btnStart As Button
+    Private lbl1 As Label
+    Private lbl2 As Label
+    Private lbl3 As Label
+    Private grp1 As GroupBox
+    Private txtLowerBound As TextBox
+    Private txtUpperBound As TextBox
+    Private lstNumbers As ListBox
 
-    PRIVATE METHOD InitializeComponent() AS VOID
-        SELF:Text := "Find primes asynchronously"
-        SELF:Size := Size{400,600}
-        SELF:Font := Font{"Arial", 16}
+    Private Method InitializeComponent() As Void
+        Self:Text := "Find primes asynchronously"
+        Self:Size := Size{400,600}
+        Self:Font := Font{"Arial", 16}
 
-        SELF:grp1 := GroupBox{}
+        Self:grp1 := GroupBox{}
         grp1:Size := Size{360, 100}
         grp1:Location := Point{20, 20}
         
@@ -70,57 +70,57 @@ CLASS MainForm INHERIT Form
         lbl3:Size := Size{350,24}
         lbl3:Location := Point{20,520}
 
-        SELF:Controls:AddRange(<Control>{btnStart, grp1, lstNumbers, lbl3})
+        Self:Controls:AddRange(<Control>{btnStart, grp1, lstNumbers, lbl3})
 
         btnStart:Click += EventHandler{btnStart_Click}
 
         lstNumbers:Items:Add(i"*** Thread-ID: {Thread.CurrentThread.ManagedThreadId}")
 
-    CONSTRUCTOR()
+    Constructor()
       InitializeComponent()
 
    
-    PRIVATE METHOD FindPrimeNumbers(l AS LONG, u AS LONG) AS List<LONG>
-      VAR primes := List<LONG>{}
-      VAR m := l,n := u
-      WHILE m < n
-        VAR b := (LONG)2
-        VAR foundPrime := TRUE
-        WHILE b * b <= m
-          IF m % b == 0
-             foundPrime := FALSE
-             EXIT
-          ENDIF
+    Private Method FindPrimeNumbers(l As Long, u As Long) As List<Long>
+      var primes := List<Long>{}
+      var m := l,n := u
+      While m < n
+        var b := (Long)2
+        var foundPrime := True
+        While b * b <= m
+          If m % b == 0
+             foundPrime := False
+             exit
+          EndIf
           b++
-       END WHILE
-       IF foundPrime
+       End While
+       If foundPrime
           primes:Add(m)
-       ENDIF
+       EndIf
        m++
-    END WHILE
-    RETURN primes
+    End While
+    Return primes
     
-    ASYNC METHOD btnStart_Click(Sender AS OBJECT, e AS EventArgs) AS VOID
-        btnStart:Enabled := FALSE
+    Async Method btnStart_Click(Sender As Object, e As EventArgs) As Void
+        btnStart:Enabled := False
         lstNumbers:Items:Clear()
         lbl3:Text := ""
-        VAR l := Int32.Parse(txtLowerBound:Text)
-        VAR u := Int32.Parse(txtUpperBound:Text)
-        VAR sw := StopWatch{}
+        var l := Int32.Parse(txtLowerBound:Text)
+        var u := Int32.Parse(txtUpperBound:Text)
+        var sw := StopWatch{}
         sw:Start()
         // var primes := Await Task.Run({=> FindPrimeNumbers(l, u)})
-        VAR t := Task.Run({=> FindPrimeNumbers(l, u)})
+        var t := Task.Run({=> FindPrimeNumbers(l, u)})
         lstNumbers:Items:Add("Doing some other work...")
-        VAR primes := AWAIT t
+        var primes := Await t
         sw:Stop()
-        VAR duration := sw:elapsed
-        lstNumbers:Items:AddRange(primes:Cast<OBJECT>():ToArray())
+        var duration := sw:elapsed
+        lstNumbers:Items:AddRange(primes:Cast<Object>():ToArray())
         lstNumbers:SelectedIndex := lstNumbers:Items:Count - 1
         lbl3:Text := i"{primes.Count.ToString(""n0"")} primes found in {duration.TotalMilliseconds.ToString(""n2"")}ms"
-        btnStart:Enabled := TRUE
+        btnStart:Enabled := True
  
-END CLASS
+End Class
 
 
-FUNCTION Start() AS VOID
+Function Start() As Void
    Application.Run(MainForm{})

@@ -127,7 +127,7 @@ CLASS MainForm INHERIT Form
               lstFiles:SelectedIndex := lstFiles:Items:Count - 1
            END TRY
         }).ContinueWith({t =>
-            lbl4:Text := i"{lstFiles.Items.Count.ToString(""n0"")} files listed"
+            lbl4:Text := i"{lstFiles.Items.Count} files listed"
         })
        
     ASYNC METHOD btnStart_Click(Sender AS OBJECT, e AS EventArgs) AS VOID
