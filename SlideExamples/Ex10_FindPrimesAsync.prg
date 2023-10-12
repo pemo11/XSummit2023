@@ -108,7 +108,7 @@ CLASS MainForm INHERIT Form
         VAR u := Int32.Parse(txtUpperBound:Text)
         VAR sw := StopWatch{}
         sw:Start()
-        // var primes := Await Task.Run({=> FindPrimeNumbers(l, u)})
+        // var primes := AWAIT Task.Run({=> FindPrimeNumbers(l, u)})
         VAR t := Task.Run({=> FindPrimeNumbers(l, u)})
         lstNumbers:Items:Add("Doing some other work...")
         VAR primes := AWAIT t

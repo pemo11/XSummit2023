@@ -38,11 +38,11 @@ Async Function Translate(TranslateText As String) As Void
 
    Begin Using var client := HttpClient{}
       Begin Using var request := HttpRequestMessage{}
-         request:Method := HttpMethod.Post
-         request:RequestUri := Uri{endpointUri + route}
-         request:Content := StringContent{requestBody, Encoding.UTF8, "application/json"}
-         request:Headers:Add("Ocp-Apim-Subscription-Key", apiKey)
- 	     request:Headers:Add("Ocp-Apim-Subscription-Region", location);
+        request:Method := HttpMethod.Post
+        request:RequestUri := Uri{endpointUri + route}
+        request:Content := StringContent{requestBody, Encoding.UTF8, "application/json"}
+        request:Headers:Add("Ocp-Apim-Subscription-Key", apiKey)
+        request:Headers:Add("Ocp-Apim-Subscription-Region", location);
 
          // Send the request and get response
          Local response := await client:SendAsync(request):ConfigureAwait(false) As HttpResponseMessage

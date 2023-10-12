@@ -122,13 +122,19 @@ Class MainForm Inherit Form
         Var lRemainder := u - partRemainder
         taskList:Add(Task.Run({=> FindPrimeNumbers(lRemainder, u)}))
         // Not necessary when querying the result of each task?
-        // Task.WaitAll(taskList:ToArray())
         lstNumbers:Items:Add("Doing some other work...")
-        Var primes := List<Int>{}
-        Foreach Var t In taskList
-           primes:AddRange(t:Result)
-        Next
+        // not good because blocking
+        // Task.WaitAll(taskList:ToArray())
+        // does not compile
+        // Await taskList
+        // Thanks to Stackoverflow;)
+        Var result := Await Task.WhenAll(taskList):ConfigureAwait(True)
         sw:Stop()
+        Var primes := List<Int>{}
+        // result is a list of lists
+        Foreach Var l1 In result
+            primes:AddRange(l1)
+         Next
         Var duration := sw:elapsed
     	lstNumbers:Items:AddRange(primes:Cast<Object>():ToArray())
         lstNumbers:SelectedIndex := lstNumbers:Items:Count - 1
