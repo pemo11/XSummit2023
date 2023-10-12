@@ -111,6 +111,7 @@ Class MainForm Inherit Form
         Var partCount := (Int)(u - l) / PartitionCount
         Var partRemainder := (u - l) % PartitionCount
         Var taskList := List<Task<List<Int>>>{}
+        lstNumbers:Items:Add("Getting prime numbers...")
         Var sw := StopWatch{}
         sw:Start()
         For Var i := 0 Upto PartitionCount - 1
@@ -128,7 +129,7 @@ Class MainForm Inherit Form
         // does not compile
         // Await taskList
         // Thanks to Stackoverflow;)
-        Var result := Await Task.WhenAll(taskList):ConfigureAwait(True)
+        Var result := Await Task.WhenAll(taskList)
         sw:Stop()
         Var primes := List<Int>{}
         // result is a list of lists
